@@ -148,4 +148,12 @@ class MyPlayer {
             mediaPlayer.seekTo(milisecond);
         }
     }
+
+    public boolean getLooping() {
+        return mediaPlayer.isLooping();
+    }
+
+    public void setLooping(boolean isLoop) {
+
+    }
 }
