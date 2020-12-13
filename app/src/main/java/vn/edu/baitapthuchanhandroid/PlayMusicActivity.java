@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 
+import vn.edu.baitapthuchanhandroid.adapters.MusicItemAdapter;
 import vn.edu.baitapthuchanhandroid.services.MyService;
 
 public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
@@ -43,11 +44,14 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private int repeatMode = 0;
     private Intent intent;
     private Handler handlerUpdateCurrentTime;
-    private Runnable runnableUpdateCurrentTime ;
+    private Runnable runnableUpdateCurrentTime;
+    private int position = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_music);
+
+        position = getIntent().getIntExtra("music", 0);
 
         btnBack = findViewById(R.id.btn_back);
         btnRandom = findViewById(R.id.btn_random_music);
@@ -64,7 +68,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         avatarMusic = findViewById(R.id.avatar_music);
         progressMusic = findViewById(R.id.progress_music);
 
-        avatarMusic.setImageResource(R.drawable.park_shin_hye);
+        tvNameMusic.setText(MusicItemAdapter.musics.get(position).getName());
+        tvNameSinger.setText(MusicItemAdapter.musics.get(position).getSingerName());
+        avatarMusic.setImageResource(MusicItemAdapter.musics.get(position).getAvatar());
+
         avatarMusic.setClipToOutline(true);
         RotateAnimation anim = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,
                 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -80,6 +87,9 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         btnRandom.setOnClickListener(this);
         btnRepeat.setOnClickListener(this);
         btnPlayPause.setOnClickListener(this);
+        btnBack.setOnClickListener(this);
+
+
 
         // Khởi tạo ServiceConnection
         connection = new ServiceConnection() {
@@ -97,7 +107,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 MyService.MyBinder binder = (MyService.MyBinder) service;
                 myService = binder.getService(); // lấy đối tượng MyService
                 isBound = true;
-
+                if (myService.getLooping()) {
+                    repeatMode = 2;
+                    btnRepeat.setColorFilter(Color.rgb(0, 168, 142));
+                    btnRepeat.setImageResource(R.drawable.ic_repeat_one);
+                }
             }
         };
 
@@ -143,21 +157,26 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 repeatMode = 1;
                 btnRepeat.setColorFilter(Color.rgb(0, 168, 142));
                 btnRepeat.setImageResource(R.drawable.ic_repeat);
+                myService.setLooping(false);
             } else if (repeatMode == 1) {
                 repeatMode = 2;
                 btnRepeat.setColorFilter(Color.rgb(0, 168, 142));
                 btnRepeat.setImageResource(R.drawable.ic_repeat_one);
+                myService.setLooping(true);
             } else if (repeatMode == 2) {
+                myService.setLooping(false);
                 repeatMode = 0;
                 btnRepeat.setColorFilter(Color.rgb(210, 210, 210));
                 btnRepeat.setImageResource(R.drawable.ic_repeat);
             }
         } else if (view.equals(btnPlayPause)) {
+            myService.setMusic(MusicItemAdapter.musics.get(position).getMusicResource());
             long totalMillis = myService.getTotalTime();
 
             progressMusic.setMin(0);
             progressMusic.setMax((int) totalMillis);
             if (handlerUpdateCurrentTime == null) {
+
                 handlerUpdateCurrentTime = new Handler();
                 runnableUpdateCurrentTime = new Runnable() {
                     @Override
@@ -206,6 +225,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                             "Service chưa hoạt động", Toast.LENGTH_SHORT).show();
                 }
             }
+        } else if (view.equals(btnBack)) {
+            finish();
         }
     }
 }

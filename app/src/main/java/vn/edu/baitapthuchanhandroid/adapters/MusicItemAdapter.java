@@ -1,6 +1,7 @@
 package vn.edu.baitapthuchanhandroid.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import vn.edu.baitapthuchanhandroid.MainActivity;
+import vn.edu.baitapthuchanhandroid.PlayMusicActivity;
 import vn.edu.baitapthuchanhandroid.R;
 import vn.edu.baitapthuchanhandroid.entities.Music;
 
 public class MusicItemAdapter extends RecyclerView.Adapter<MusicItemAdapter.MusicItemViewHoler> {
-    private final ArrayList<Music> musics = new ArrayList<>();
+    public static final ArrayList<Music> musics = new ArrayList<>();
     private LayoutInflater layoutInflater;
+    Context context;
     public MusicItemAdapter(Context context) {
+        this.context = context;
         musics.add(new Music(R.raw.ailatrieuphu, "Không có", "Nhạc nền Ai là triệu phú", R.drawable.ailatrieuphu));
         musics.add(new Music(R.raw.buonvuongmauao_nguyenhung, "Nguyễn Hưng", "Buồn vương màu áo", R.drawable.khongbiet));
         musics.add(new Music(R.raw.nangamxadan, "Sơn Tùng MTP", "Nắng ấm xa dần", R.drawable.park_shin_hye));
@@ -39,11 +44,19 @@ public class MusicItemAdapter extends RecyclerView.Adapter<MusicItemAdapter.Musi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MusicItemViewHoler holder, int position) {
+    public void onBindViewHolder(@NonNull MusicItemViewHoler holder, final int position) {
         holder.avatar.setImageResource(musics.get(position).getAvatar());
         holder.tvSinger.setText(musics.get(position).getSingerName());
         holder.tvName.setText(musics.get(position).getName());
         holder.avatar.setClipToOutline(true);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PlayMusicActivity.class);
+                intent.putExtra("music", position);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

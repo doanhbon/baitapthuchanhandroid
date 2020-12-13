@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import vn.edu.baitapthuchanhandroid.R;
+import vn.edu.baitapthuchanhandroid.adapters.MusicItemAdapter;
 
 public class MyService extends Service {
 
@@ -68,6 +69,17 @@ public class MyService extends Service {
         return myPlayer.getIsPlaying();
     }
 
+    public boolean getLooping() {
+        return myPlayer.getLooping();
+    }
+
+    public void setLooping(boolean isLoop) {
+        myPlayer.setLooping(isLoop);
+    }
+
+    public void setMusic(int resourceID) {
+        myPlayer.setMusic(resourceID);
+    }
     public void setCurrentPosition(int miliseconds) {
         myPlayer.setCurrentPosition(miliseconds);
     }
@@ -86,13 +98,15 @@ public class MyService extends Service {
 class MyPlayer {
     // đối tượng này giúp phát một bài nhạc
     private MediaPlayer mediaPlayer;
+    private Context context;
 
     public MyPlayer(Context context) {
+        this.context = context;
         // Nạp bài nhạc vào mediaPlayer
         mediaPlayer = MediaPlayer.create(
                 context, R.raw.nangamxadan);
         // Đặt chế độ phát lặp lại liên tục
-        mediaPlayer.setLooping(true);
+        mediaPlayer.setLooping(false);
 //        mediaPlayer.pause();
     }
 
@@ -154,6 +168,10 @@ class MyPlayer {
     }
 
     public void setLooping(boolean isLoop) {
+        mediaPlayer.setLooping(isLoop);
+    }
 
+    public void setMusic(int resourceId) {
+        mediaPlayer = MediaPlayer.create(context, resourceId);
     }
 }
