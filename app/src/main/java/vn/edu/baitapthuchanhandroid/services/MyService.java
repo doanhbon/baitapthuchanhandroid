@@ -90,7 +90,7 @@ class MyPlayer {
     public MyPlayer(Context context) {
         // Nạp bài nhạc vào mediaPlayer
         mediaPlayer = MediaPlayer.create(
-                context, R.raw.ailatrieuphu);
+                context, R.raw.nangamxadan);
         // Đặt chế độ phát lặp lại liên tục
         mediaPlayer.setLooping(true);
 //        mediaPlayer.pause();
