@@ -19,9 +19,16 @@ public class MusicItemAdapter extends RecyclerView.Adapter<MusicItemAdapter.Musi
     private final ArrayList<Music> musics = new ArrayList<>();
     private LayoutInflater layoutInflater;
     public MusicItemAdapter(Context context) {
-        musics.add(new Music(R.raw.ailatrieuphu, "Không có", "Nhạc nền Ai là triệu phú", R.drawable.park_shin_hye));
-        musics.add(new Music(R.raw.buonvuongmauao_nguyenhung, "Nguyễn Hưng", "Buồn vương màu áo", R.drawable.park_shin_hye));
+        musics.add(new Music(R.raw.ailatrieuphu, "Không có", "Nhạc nền Ai là triệu phú", R.drawable.ailatrieuphu));
+        musics.add(new Music(R.raw.buonvuongmauao_nguyenhung, "Nguyễn Hưng", "Buồn vương màu áo", R.drawable.khongbiet));
         musics.add(new Music(R.raw.nangamxadan, "Sơn Tùng MTP", "Nắng ấm xa dần", R.drawable.park_shin_hye));
+        musics.add(new Music(R.raw.amthambenem, "Sơn Tùng MTP", "Âm thầm bên em", R.drawable.khuonmatdangthuong));
+        musics.add(new Music(R.raw.chungtakhongthuocvenhau, "Sơn Tùng MTP", "Chúng ta không thuộc về nhau", R.drawable.chungtakhuongthuocvenhau));
+        musics.add(new Music(R.raw.lactroi, "Sơn Tùng MTP", "Lạc trôi", R.drawable.khuonmatdangthuong));
+        musics.add(new Music(R.raw.emcuangayhomqua, "Sơn Tùng MTP", "Em của ngày hôm qua", R.drawable.emcuangayhomqua));
+        musics.add(new Music(R.raw.khuonmatdangthuong, "Sơn Tùng MTP", "Khuôn mặt đáng thương", R.drawable.khuonmatdangthuong));
+        musics.add(new Music(R.raw.noinaycoanh, "Sơn Tùng MTP", "Nơi này có anh", R.drawable.emcuangayhomqua));
+
         layoutInflater = LayoutInflater.from(context);
     }
     @NonNull
