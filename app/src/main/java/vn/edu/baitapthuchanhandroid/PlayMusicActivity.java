@@ -146,6 +146,11 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         progressMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                long currentMinutes = TimeUnit.MILLISECONDS.toMinutes(i);
+                long currentSeconds = TimeUnit.MILLISECONDS.toSeconds(i)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(i));
+
+                tvCurrentTime.setText((currentMinutes < 10 ? "0" + currentMinutes : currentMinutes + "") + ":" + (currentSeconds < 10 ? "0" + currentSeconds : currentSeconds + ""));
             }
 
             @Override
@@ -203,11 +208,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     public void run() {
                         if (myService.getIsPlaying()) {
                             long currentMillis = myService.getCurrentTime();
-                            long currentMinutes = TimeUnit.MILLISECONDS.toMinutes(currentMillis);
-                            long currentSeconds = TimeUnit.MILLISECONDS.toSeconds(currentMillis)
-                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentMillis));
 
-                            tvCurrentTime.setText((currentMinutes < 10 ? "0" + currentMinutes : currentMinutes + "") + ":" + (currentSeconds < 10 ? "0" + currentSeconds : currentSeconds + ""));
                             progressMusic.setProgress((int) currentMillis);
 
                         }

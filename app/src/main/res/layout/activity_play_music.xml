@@ -67,6 +67,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="48dp"
         android:backgroundTint="#00A88E"
+        android:progressTint="#8A88F3"
         android:thumbTint="#FFFFFF" />
 
     <LinearLayout
@@ -127,8 +128,7 @@
             android:id="@+id/btn_play_pause_music"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:background="@drawable/play_pause_button"
             app:srcCompat="@drawable/ic_play" />
 
         <ImageButton
