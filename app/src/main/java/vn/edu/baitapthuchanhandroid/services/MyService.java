@@ -83,6 +83,11 @@ public class MyService extends Service {
     public void setCurrentPosition(int miliseconds) {
         myPlayer.setCurrentPosition(miliseconds);
     }
+    public MediaPlayer getMediaPlayer() { return myPlayer.getMediaPlayer(); }
+    public void stopMusic() {
+        myPlayer.stop();
+    }
+
     public class MyBinder extends Binder {
 
         // phương thức này trả về đối tượng MyService
@@ -108,6 +113,10 @@ class MyPlayer {
         // Đặt chế độ phát lặp lại liên tục
         mediaPlayer.setLooping(false);
 //        mediaPlayer.pause();
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
     }
 
     public void fastForward(int pos){

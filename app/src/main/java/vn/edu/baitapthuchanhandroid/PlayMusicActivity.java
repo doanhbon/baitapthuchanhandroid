@@ -12,12 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.view.DragEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -27,6 +25,7 @@ import android.widget.Toast;
 import java.util.concurrent.TimeUnit;
 
 import vn.edu.baitapthuchanhandroid.adapters.MusicItemAdapter;
+import vn.edu.baitapthuchanhandroid.entities.Music;
 import vn.edu.baitapthuchanhandroid.services.MyService;
 
 public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,7 +39,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private boolean isStart = false;
     private ServiceConnection connection;
 
-    private boolean isRandom = false, isPlay = true;
+    private boolean isRandom = false, isPlaying = false;
     private int repeatMode = 0;
     private Intent intent;
     private Handler handlerUpdateCurrentTime;
@@ -88,8 +87,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         btnRepeat.setOnClickListener(this);
         btnPlayPause.setOnClickListener(this);
         btnBack.setOnClickListener(this);
-
-
+        btnSkipNext.setOnClickListener(this);
+        btnSkipPrevious.setOnClickListener(this);
 
         // Khởi tạo ServiceConnection
         connection = new ServiceConnection() {
@@ -112,6 +111,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     btnRepeat.setColorFilter(Color.rgb(0, 168, 142));
                     btnRepeat.setImageResource(R.drawable.ic_repeat_one);
                 }
+                myService.setMusic(MusicItemAdapter.musics.get(position).getMusicResource());
             }
         };
 
@@ -135,7 +135,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 myService.setCurrentPosition(seekBar.getProgress());
-                if (!isPlay) {
+                if (isPlaying) {
                     myService.fastStart();
                 }
             }
@@ -170,7 +170,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 btnRepeat.setImageResource(R.drawable.ic_repeat);
             }
         } else if (view.equals(btnPlayPause)) {
-            myService.setMusic(MusicItemAdapter.musics.get(position).getMusicResource());
             long totalMillis = myService.getTotalTime();
 
             progressMusic.setMin(0);
@@ -203,23 +202,23 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
 
             tvTotalTime.setText((totalMinutes < 10 ? "0" + totalMinutes : totalMinutes + "") + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds + ""));
 
-            isPlay = !isPlay;
-            if (isPlay) {
-                btnPlayPause.setImageResource(R.drawable.ic_play);
-            } else {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
                 btnPlayPause.setImageResource(R.drawable.ic_pause);
+            } else {
+                btnPlayPause.setImageResource(R.drawable.ic_play);
             }
 
-            if (isPlay) {
+            if (isPlaying) {
                 if(isBound){
-                    myService.fastForward();
+                    myService.fastStart();
                 } else {
                     Toast.makeText(PlayMusicActivity.this,
                             "Service chưa hoạt động", Toast.LENGTH_SHORT).show();
                 }
-            } else if (!isPlay) {
+            } else if (!isPlaying) {
                 if(isBound){
-                    myService.fastStart();
+                    myService.fastForward();
                 }else{
                     Toast.makeText(PlayMusicActivity.this,
                             "Service chưa hoạt động", Toast.LENGTH_SHORT).show();
@@ -227,6 +226,40 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             }
         } else if (view.equals(btnBack)) {
             finish();
+        } else if (view.equals(btnSkipNext)) {
+            position+=1;
+
+            if (isRandom) {
+                position = getRandomNumber(0, MusicItemAdapter.musics.size() - 1);
+            }
+            setNewMusic(position);
+        } else if (view.equals(btnSkipPrevious)) {
+
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void setNewMusic(int position) {
+        Music music = MusicItemAdapter.musics.get(position);
+        myService.stopMusic();
+        myService.setMusic(music.getMusicResource());
+        if (isPlaying) {
+            myService.fastStart();
+        }
+        avatarMusic.setImageResource(music.getAvatar());
+        tvNameMusic.setText(music.getName());
+        tvNameSinger.setText(music.getSingerName());
+        long totalMillis = myService.getTotalTime();
+        long totalMinutes = TimeUnit.MILLISECONDS.toMinutes(totalMillis);
+        long totalSeconds = TimeUnit.MILLISECONDS.toSeconds(totalMillis)
+                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(totalMillis));
+        progressMusic.setMin(0);
+        progressMusic.setMax((int) totalMillis);
+        tvCurrentTime.setText("00:00");
+        tvTotalTime.setText((totalMinutes < 10 ? "0" + totalMinutes : totalMinutes + "") + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds + ""));
+    }
+
+    public int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 }

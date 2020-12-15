@@ -2,6 +2,7 @@ package vn.edu.baitapthuchanhandroid.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import vn.edu.baitapthuchanhandroid.MainActivity;
 import vn.edu.baitapthuchanhandroid.PlayMusicActivity;
@@ -22,6 +26,7 @@ public class MusicItemAdapter extends RecyclerView.Adapter<MusicItemAdapter.Musi
     public static final ArrayList<Music> musics = new ArrayList<>();
     private LayoutInflater layoutInflater;
     Context context;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public MusicItemAdapter(Context context) {
         this.context = context;
         musics.add(new Music(R.raw.ailatrieuphu, "Không có", "Nhạc nền Ai là triệu phú", R.drawable.ailatrieuphu));
@@ -34,6 +39,12 @@ public class MusicItemAdapter extends RecyclerView.Adapter<MusicItemAdapter.Musi
         musics.add(new Music(R.raw.khuonmatdangthuong, "Sơn Tùng MTP", "Khuôn mặt đáng thương", R.drawable.khuonmatdangthuong));
         musics.add(new Music(R.raw.noinaycoanh, "Sơn Tùng MTP", "Nơi này có anh", R.drawable.emcuangayhomqua));
 
+        musics.sort(new Comparator<Music>() {
+            @Override
+            public int compare(Music music, Music t1) {
+                return music.getName().compareTo(t1.getName());
+            }
+        });
         layoutInflater = LayoutInflater.from(context);
     }
     @NonNull
