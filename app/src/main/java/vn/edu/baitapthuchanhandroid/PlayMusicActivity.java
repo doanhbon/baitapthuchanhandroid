@@ -20,6 +20,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,11 +32,11 @@ import vn.edu.baitapthuchanhandroid.entities.Music;
 import vn.edu.baitapthuchanhandroid.services.MyService;
 
 public class PlayMusicActivity extends AppCompatActivity implements View.OnClickListener {
-    private ImageButton btnBack, btnRandom, btnSkipPrevious, btnSkipNext, btnPlayPause, btnRepeat;
+    private ImageButton btnBack, btnRandom, btnSkipPrevious, btnSkipNext, btnPlayPause, btnRepeat, btnMenu, btnCloseMenu;
     private TextView tvNameMusic, tvNameSinger, tvCurrentTime, tvTotalTime;
     private ImageView avatarMusic;
-    private SeekBar progressMusic;
-
+    private SeekBar progressMusic, progressTotalVolume, progressLeftVolume, progressRightVolume;
+    private LinearLayout layoutMenu;
     private MyService myService;
     private boolean isBound = false;
     private boolean isStart = false;
@@ -47,6 +48,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
     private Handler handlerUpdateCurrentTime;
     private Runnable runnableUpdateCurrentTime;
     private int position = 0;
+    private int maxVolume = 50;
+    private int currentVolume = 25;
+    private int currentLeftVolume = 25;
+    private int currentRightVolume = 25;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         btnSkipPrevious = findViewById(R.id.btn_skip_previous_music);
         btnPlayPause = findViewById(R.id.btn_play_pause_music);
         btnRepeat = findViewById(R.id.btn_repeat_music);
+        btnMenu = findViewById(R.id.btn_menu);
+        btnCloseMenu = findViewById(R.id.btn_close_menu);
+
+        layoutMenu = findViewById(R.id.menu_view);
 
         tvNameMusic = findViewById(R.id.music_name);
         tvNameSinger = findViewById(R.id.singer_name);
@@ -67,7 +76,19 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         tvTotalTime = findViewById(R.id.total_time_music);
 
         avatarMusic = findViewById(R.id.avatar_music);
+
         progressMusic = findViewById(R.id.progress_music);
+        progressTotalVolume = findViewById(R.id.progress_volume);
+        progressLeftVolume = findViewById(R.id.progress_left_volume);
+        progressRightVolume = findViewById(R.id.progress_right_volume);
+
+        progressTotalVolume.setMax(maxVolume);
+        progressLeftVolume.setMax(maxVolume);
+        progressRightVolume.setMax(maxVolume);
+
+        progressTotalVolume.setProgress(currentVolume);
+        progressLeftVolume.setProgress(currentLeftVolume);
+        progressRightVolume.setProgress(currentRightVolume);
 
         tvNameMusic.setText(MusicItemAdapter.musics.get(position).getName());
         tvNameSinger.setText(MusicItemAdapter.musics.get(position).getSingerName());
@@ -91,6 +112,8 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         btnBack.setOnClickListener(this);
         btnSkipNext.setOnClickListener(this);
         btnSkipPrevious.setOnClickListener(this);
+        btnMenu.setOnClickListener(this);
+        btnCloseMenu.setOnClickListener(this);
 
         // Khởi tạo ServiceConnection
         connection = new ServiceConnection() {
@@ -133,6 +156,17 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                         setNewMusic(position);
                     }
                 });
+
+                float log1= (float)(Math.log(maxVolume-(maxVolume - currentVolume))/Math.log(maxVolume));
+
+                if (currentLeftVolume < currentRightVolume) {
+                    myService.getMediaPlayer().setVolume((currentLeftVolume / currentRightVolume) * log1, log1);
+                } else if (currentRightVolume < currentLeftVolume) {
+                    myService.getMediaPlayer().setVolume(log1, (currentRightVolume / currentLeftVolume) * log1);
+                } else {
+                    myService.getMediaPlayer().setVolume(log1, log1);
+                }
+
             }
         };
 
@@ -164,6 +198,84 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 if (isPlaying) {
                     myService.fastStart();
                 }
+            }
+        });
+
+        progressTotalVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                currentVolume = i;
+                float log1= (float)(Math.log(maxVolume-(maxVolume - currentVolume))/Math.log(maxVolume));
+
+                if (currentLeftVolume < currentRightVolume) {
+                    myService.getMediaPlayer().setVolume((currentLeftVolume / currentRightVolume) * log1, log1);
+                } else if (currentRightVolume < currentLeftVolume) {
+                    myService.getMediaPlayer().setVolume(log1, (currentRightVolume / currentLeftVolume) * log1);
+                } else {
+                    myService.getMediaPlayer().setVolume(log1, log1);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        progressLeftVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                currentLeftVolume = i;
+                float log1= (float)(Math.log(maxVolume-(maxVolume - currentVolume))/Math.log(maxVolume));
+
+                if (currentLeftVolume < currentRightVolume) {
+                    myService.getMediaPlayer().setVolume((currentLeftVolume / currentRightVolume) * log1, log1);
+                } else if (currentRightVolume < currentLeftVolume) {
+                    myService.getMediaPlayer().setVolume(log1, (currentRightVolume / currentLeftVolume) * log1);
+                } else {
+                    myService.getMediaPlayer().setVolume(log1, log1);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        progressRightVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                currentRightVolume = i;
+                float log1= (float)(Math.log(maxVolume-(maxVolume - currentVolume))/Math.log(maxVolume));
+
+                if (currentLeftVolume < currentRightVolume) {
+                    myService.getMediaPlayer().setVolume((currentLeftVolume / currentRightVolume) * log1, log1);
+                } else if (currentRightVolume < currentLeftVolume) {
+                    myService.getMediaPlayer().setVolume(log1, (currentRightVolume / currentLeftVolume) * log1);
+                } else {
+                    myService.getMediaPlayer().setVolume(log1, log1);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
     }
@@ -270,6 +382,10 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                 position = getRandomNumber(0, MusicItemAdapter.musics.size() - 1);
             }
             setNewMusic(position);
+        } else if (view.equals(btnMenu)) {
+            layoutMenu.animate().translationY(-600);
+        } else if (view.equals(btnCloseMenu)) {
+            layoutMenu.animate().translationY(0);
         }
     }
 
