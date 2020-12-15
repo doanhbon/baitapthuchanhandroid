@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -112,6 +114,25 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
                     btnRepeat.setImageResource(R.drawable.ic_repeat_one);
                 }
                 myService.setMusic(MusicItemAdapter.musics.get(position).getMusicResource());
+                myService.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        Log.d("repeate_mode", String.valueOf(repeatMode));
+                        if (repeatMode == 2) return;
+                        if (position == MusicItemAdapter.musics.size() - 1) {
+                            if (repeatMode == 0) return;
+                            position = 0;
+                        } else {
+                            position+=1;
+                        }
+
+                        if (isRandom) {
+                            position = getRandomNumber(0, MusicItemAdapter.musics.size() - 1);
+                        }
+                        setNewMusic(position);
+                    }
+                });
             }
         };
 
@@ -227,20 +248,33 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         } else if (view.equals(btnBack)) {
             finish();
         } else if (view.equals(btnSkipNext)) {
-            position+=1;
+            if (position == MusicItemAdapter.musics.size() - 1) {
+                position = 0;
+            } else {
+                position+=1;
+            }
 
             if (isRandom) {
                 position = getRandomNumber(0, MusicItemAdapter.musics.size() - 1);
             }
             setNewMusic(position);
         } else if (view.equals(btnSkipPrevious)) {
+            if (position == 0) {
+                position = MusicItemAdapter.musics.size() - 1;
+            } else {
+                position-=1;
+            }
 
+            if (isRandom) {
+                position = getRandomNumber(0, MusicItemAdapter.musics.size() - 1);
+            }
+            setNewMusic(position);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void setNewMusic(int position) {
-        Music music = MusicItemAdapter.musics.get(position);
+    private void setNewMusic(int index) {
+        Music music = MusicItemAdapter.musics.get(index);
         myService.stopMusic();
         myService.setMusic(music.getMusicResource());
         if (isPlaying) {
@@ -257,6 +291,25 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
         progressMusic.setMax((int) totalMillis);
         tvCurrentTime.setText("00:00");
         tvTotalTime.setText((totalMinutes < 10 ? "0" + totalMinutes : totalMinutes + "") + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds + ""));
+        myService.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                Log.d("repeate_mode", String.valueOf(repeatMode));
+                if (repeatMode == 2) return;
+                if (position == MusicItemAdapter.musics.size() - 1) {
+                    if (repeatMode == 0) return;
+                    position = 0;
+                } else {
+                    position+=1;
+                }
+
+                if (isRandom) {
+                    position = getRandomNumber(0, MusicItemAdapter.musics.size() - 1);
+                }
+                setNewMusic(position);
+            }
+        });
     }
 
     public int getRandomNumber(int min, int max) {

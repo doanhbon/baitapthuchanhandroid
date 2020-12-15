@@ -1,15 +1,31 @@
 package vn.edu.baitapthuchanhandroid.services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.RemoteControlClient;
+import android.media.session.MediaSession;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import vn.edu.baitapthuchanhandroid.PlayMusicActivity;
 import vn.edu.baitapthuchanhandroid.R;
 import vn.edu.baitapthuchanhandroid.adapters.MusicItemAdapter;
 
@@ -25,7 +41,6 @@ public class MyService extends Service {
 
         myPlayer = new MyPlayer(this);
         binder = new MyBinder(); // do MyBinder được extends Binder
-
     }
 
     @Nullable
