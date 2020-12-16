@@ -171,7 +171,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="700dp"
-        android:background="@android:color/white">
+        android:background="@drawable/back_ground_menu">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:text="Âm lượng tổng"/>
             <SeekBar
@@ -219,7 +219,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:text="Âm lượng trái"/>
             <SeekBar
@@ -238,7 +238,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:text="Âm lượng phải"/>
             <SeekBar

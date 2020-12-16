@@ -384,6 +384,7 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             setNewMusic(position);
         } else if (view.equals(btnMenu)) {
             layoutMenu.animate().translationY(-600);
+//            getWindow().getDecorView().getRootView().animate().translationY(900);
         } else if (view.equals(btnCloseMenu)) {
             layoutMenu.animate().translationY(0);
         }
