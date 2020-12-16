@@ -187,7 +187,7 @@
                 android:background="@android:color/transparent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:tint="@android:color/black"
+                android:tint="@android:color/white"
                 app:srcCompat="@drawable/ic_baseline_close_24" />
 
         </LinearLayout>
@@ -202,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
-                android:text="Âm lượng tổng"/>
+                android:text="Âm tổng"/>
             <SeekBar
                 android:id="@+id/progress_volume"
                 android:layout_width="300dp"
@@ -221,7 +221,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
-                android:text="Âm lượng trái"/>
+                android:text="Âm trái"/>
             <SeekBar
                 android:id="@+id/progress_left_volume"
                 android:layout_width="300dp"
@@ -240,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
-                android:text="Âm lượng phải"/>
+                android:text="Âm phải"/>
             <SeekBar
                 android:id="@+id/progress_right_volume"
                 android:layout_width="300dp"

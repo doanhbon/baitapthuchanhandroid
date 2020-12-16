@@ -15,9 +15,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.view.animation.Transformation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -384,7 +386,6 @@ public class PlayMusicActivity extends AppCompatActivity implements View.OnClick
             setNewMusic(position);
         } else if (view.equals(btnMenu)) {
             layoutMenu.animate().translationY(-600);
-//            getWindow().getDecorView().getRootView().animate().translationY(900);
         } else if (view.equals(btnCloseMenu)) {
             layoutMenu.animate().translationY(0);
         }
